@@ -5,9 +5,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
+	start := time.Now()
 	for _, url := range os.Args[1:] {
 		resp, err := http.Get(url)
 		if err != nil {
@@ -22,4 +24,5 @@ func main() {
 		}
 		fmt.Printf("%s", b)
 	}
+	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
