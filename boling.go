@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"pra"
+)
 
 const bolingF = 212.0
 
@@ -9,6 +12,8 @@ func main() {
 	var c1, c2 = FtoC(f1), FtoC(f2)
 	fmt.Printf("boling point =  %g °F or %g °C\n", f1, c1)
 	fmt.Printf("freezing point =  %g °F or %g °C\n", f2, c2)
+	var hi pra.Mytype = 10.0
+	fmt.Println(hi)
 }
 
 func FtoC(f float64) float64 {

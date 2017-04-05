@@ -7,7 +7,9 @@ import (
 	"strings"
 )
 
-func main1() {
+func main() {
+	var hi pra.Mytype = 10.0
+	fmt.Println(hi)
 	fmt.Println("hello world")
 	fmt.Println(pra.Even(2))
 
