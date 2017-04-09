@@ -32,4 +32,12 @@ func main() {
 	//打印命令行 c
 	fmt.Println(strings.Join(os.Args[1:], " "))
 
+	var iu8 uint8 = 255
+	fmt.Println(iu8, iu8+1)
+	var i int8 = 127
+	fmt.Println(i, i+1)
+
+	var x uint8 = 1<<2 | 1<<3
+	fmt.Println(x)
+	fmt.Printf("%08b\n", x)
 }
