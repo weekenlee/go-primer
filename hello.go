@@ -40,4 +40,6 @@ func main() {
 	var x uint8 = 1<<2 | 1<<3
 	fmt.Println(x)
 	fmt.Printf("%08b\n", x)
+	a := fmt.Sprintf("%08b\n", x)
+	fmt.Println(a)
 }
