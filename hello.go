@@ -42,4 +42,11 @@ func main() {
 	fmt.Printf("%08b\n", x)
 	a := fmt.Sprintf("%08b\n", x)
 	fmt.Println(a)
+
+	八进制 := 0666
+	fmt.Printf("%d %[1]o %#[1]o\n", 八进制)
+
+	十六 := 0xabc
+	fmt.Printf("%d %[1]x %#[1]x\n", 十六)
+
 }
