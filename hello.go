@@ -5,6 +5,7 @@ import (
 	"os"
 	"pra"
 	"strings"
+	"unicode/utf8"
 )
 
 func main() {
@@ -49,4 +50,39 @@ func main() {
 	十六 := 0xabc
 	fmt.Printf("%d %[1]x %#[1]x\n", 十六)
 
+	sw := "Hello, 世界"
+	fmt.Println(len(sw))                    // "13"
+	fmt.Println(utf8.RuneCountInString(sw)) // "9"
+
+	for i := 0; i < len(sw); {
+		r, size := utf8.DecodeRuneInString(sw[i:])
+		fmt.Printf("%d\t%c\n", i, r)
+		i += size
+	}
+
+	//Go语言的range循环在处理字符串的时候，会自动隐式解码UTF8字符串
+	for i, r := range "Hello, 世界" {
+		fmt.Printf("%d\t%q\t%d\n", i, r, r)
+	}
+
+	filepath := "/a/b/c.go"
+	fmt.Println(basename(filepath))
+}
+
+func basename(s string) string {
+	for i := len(s) - 1; i > 0; i-- {
+		if s[i] == '/' {
+			s = s[i+1:]
+			break
+		}
+	}
+
+	for i := len(s) - 1; i >= 0; i-- {
+		if s[i] == '.' {
+			s = s[:i]
+			break
+		}
+	}
+
+	return s
 }
