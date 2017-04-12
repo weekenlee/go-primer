@@ -66,7 +66,10 @@ func main() {
 	}
 
 	filepath := "/a/b/c.go"
-	fmt.Println(basename(filepath))
+	fmt.Println(basename(filepath), basename2(filepath))
+	filepath2 := "/a/b/c.go.go"
+	fmt.Println(basename(filepath2), basename2(filepath2))
+
 }
 
 func basename(s string) string {
@@ -84,5 +87,14 @@ func basename(s string) string {
 		}
 	}
 
+	return s
+}
+
+func basename2(s string) string {
+	slash := strings.LastIndex(s, "/")
+	s = s[slash+1:]
+	if point := strings.LastIndex(s, "."); point > 0 {
+		s = s[:point]
+	}
 	return s
 }
