@@ -6,8 +6,11 @@ import (
 	"net/http"
 	"path/filepath"
 	"sync"
+
+	chat "liweijian.com/chat"
 )
 
+// templ represents a single template
 type templateHandler struct {
 	once     sync.Once
 	filename string
@@ -23,21 +26,24 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.templ.Execute(w, nil)
 }
 
+// newRoom makes a new Room.
+func newRoom() *chat.Room {
+	return &chat.Room{
+		Forward: make(chan []byte),
+		Join:    make(chan *chat.Client),
+		Leave:   make(chan *chat.Client),
+		Clients: make(map[*chat.Client]bool),
+	}
+}
+
 func main() {
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	w.Write([]byte(`
-	//        <html>
-	//          <head>
-	//            <title>Chat</title>
-	//          </head>
-	//          <body>
-	//            Let's chat!
-	//          </body>
-	// 	</html> `))
-	// })
+	r := newRoom()
 	http.Handle("/", &templateHandler{filename: "chat.html"})
+	http.Handle("/Room", r)
+	// get the Room going
+	go r.Run()
 	// start the web server
-	if err := http.ListenAndServe(":8000", nil); err != nil {
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
