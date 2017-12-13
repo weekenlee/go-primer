@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+const SIZE = 100
+
 func generate(ch chan<- int) {
 	for i := 2; ; i++ {
 		ch <- i
@@ -24,6 +26,9 @@ func main() {
 	for {
 		prime := <-ch
 		fmt.Println(prime)
+		if prime > SIZE {
+			break
+		}
 		ch1 := make(chan int)
 		go filter(ch, ch1, prime)
 		ch = ch1
