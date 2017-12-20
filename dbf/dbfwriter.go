@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"liweijian/xls"
+	"liweijian.com/xls"
 
 	"github.com/LindsayBradford/go-dbf/godbf"
 	lua "github.com/yuin/gopher-lua"
