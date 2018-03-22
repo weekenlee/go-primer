@@ -7,3 +7,11 @@ where()
 where()
 // some more code
 where()
+
+
+//执行时间
+start := time.Now()
+longCalculation()
+end := time.Now()
+delta := end.Sub(start)
+fmt.Printf("longCalculation took this amount of time: %s\n", delta)
