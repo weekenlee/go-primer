@@ -23,7 +23,7 @@ func f1(v id) id {
 	}
 }
 
-func f3(v id) id {
+func f2(v id) id {
 	switch v := v.(type) {
 	case int:
 		if int(v)%2 == 0 {
@@ -36,21 +36,9 @@ func f3(v id) id {
 }
 
 func main() {
+	r1 := groupBy(f1)([]interface{}{"1","2","3"})
+	fmt.Println(r1)
 
-	r := groupBy(func(v id) id {
-		if v=="1" {
-			return "YES"
-		} else {
-			return "NO"
-		}
-	})([]id{"1","2","3"})
-	fmt.Println(r)
-
-
-	r3 := groupBy(f1)([]interface{}{"1","2","3"})
-	fmt.Println(r3)
-
-
-	r4 := groupBy(f3)([]interface{}{1,2,3,4,5,6})
-	fmt.Println(r4)
+	r2 := groupBy(f2)([]interface{}{1,2,3,4,5,6})
+	fmt.Println(r2)
 }
