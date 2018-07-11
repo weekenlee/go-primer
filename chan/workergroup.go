@@ -9,8 +9,8 @@ type WG struct {
 
 func New(n int) WG {
 	res := WG {
-		main: make(chan func())
-		allDone: make(chan bool)
+		main: make(chan func()),
+		allDone: make(chan bool),
 	}
 
 	procDone := make(chan bool)
@@ -42,8 +42,8 @@ func (wg WG) Add(f func()) {
 }
 
 func (wg WG) Wait() {
-	wg.close(main)
-	_ <- allDone
+	close(wg.main)
+	<- wg.allDone
 }
 
 func main() {
