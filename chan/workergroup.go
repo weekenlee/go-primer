@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type WG struct {
 	main    chan func()
@@ -8,8 +11,8 @@ type WG struct {
 }
 
 func New(n int) WG {
-	res := WG {
-		main: make(chan func()),
+	res := WG{
+		main:    make(chan func()),
 		allDone: make(chan bool),
 	}
 
@@ -29,7 +32,7 @@ func New(n int) WG {
 
 	go func() {
 		for i := 0; i < n; i++ {
-			_ = <- procDone
+			_ = <-procDone
 		}
 		res.allDone <- true
 	}()
@@ -43,15 +46,23 @@ func (wg WG) Add(f func()) {
 
 func (wg WG) Wait() {
 	close(wg.main)
-	<- wg.allDone
+	<-wg.allDone
 }
 
+var m *sync.Mutex
+
 func main() {
-	wg := New(50) //50个worker
+	wg := New(50) //50个worker, 跑1000个函数
+	m = new(sync.Mutex)
+	k := 0
 	for i := 0; i < 1000; i++ {
 		wg.Add(func() {
 			fmt.Println("func run")
+			m.Lock()
+			k++
+			m.Unlock()
 		})
 	}
 	wg.Wait()
+	fmt.Println(k)
 }
