@@ -5,27 +5,27 @@ import (
 	"strings"
 )
 
-type simpleCN struct {
+type simpleEN struct {
 	name string
 	talk Talk
 }
 
-func NewSimpleCN(name string, talk Talk) Chatbot {
-	return &simpleCN {
+func NewSimpleEN(name string, talk Talk) Chatbot {
+	return &simpleEN {
 		name: name,
 		talk: talk,
 	}
 }
 
-func (robot *simpleCN) Name string {
+func (robot *simpleEN) Name() string {
 	return robot.name
 }
 
-func (robot *simpleCN) Begin() (string, error) {
+func (robot *simpleEN) Begin() (string, error) {
 	return "please input your name: ", nil
 }
 
-func (robot *simpleCN) Hello(userName string) string {
+func (robot *simpleEN) Hello(userName string) string {
 	userName = strings.TrimSpace(userName)
 	if robot.talk != nil {
 		return robot.talk.Hello(userName)
@@ -33,8 +33,8 @@ func (robot *simpleCN) Hello(userName string) string {
 	return fmt.Sprintf("hello ， %s ！ what can i do for u?", userName)
 }
 
-func (robot *simpleCN) Talk(heard string) (saying string, end bool , err error) {
-	head = strings.TrimSpace(heard)
+func (robot *simpleEN) Talk(heard string) (saying string, end bool , err error) {
+	heard = strings.TrimSpace(heard)
 	if robot.talk != nil {
 		return robot.talk.Talk(heard)
 	}
@@ -48,13 +48,14 @@ func (robot *simpleCN) Talk(heard string) (saying string, end bool , err error) 
 		return
 	default:
 		saying = "sorry， i did not catch you。"
+		return
 	}
 }
 
-func (robot *simpleCN) ReportError(err error) string {
+func (robot *simpleEN) ReportError(err error) string {
 	return fmt.Sprintf("an error occur: %s\n", err)
 }
 
-func (robot *simpleCN) End() error {
+func (robot *simpleEN) End() error {
 	return nil
 }

@@ -17,7 +17,7 @@ func NewSimpleCN(name string, talk Talk) Chatbot {
 	}
 }
 
-func (robot *simpleCN) Name string {
+func (robot *simpleCN) Name() string {
 	return robot.name
 }
 
@@ -34,7 +34,7 @@ func (robot *simpleCN) Hello(userName string) string {
 }
 
 func (robot *simpleCN) Talk(heard string) (saying string, end bool , err error) {
-	head = strings.TrimSpace(heard)
+	heard = strings.TrimSpace(heard)
 	if robot.talk != nil {
 		return robot.talk.Talk(heard)
 	}
@@ -48,6 +48,7 @@ func (robot *simpleCN) Talk(heard string) (saying string, end bool , err error) 
 		return
 	default:
 		saying = "对不起， 我没有听懂您说的。"
+		return 
 	}
 }
 
