@@ -22,7 +22,7 @@ func (robot *simpleCN) Name string {
 }
 
 func (robot *simpleCN) Begin() (string, error) {
-	return "请输入您的名字: ", nil
+	return "please input your name: ", nil
 }
 
 func (robot *simpleCN) Hello(userName string) string {
@@ -30,7 +30,7 @@ func (robot *simpleCN) Hello(userName string) string {
 	if robot.talk != nil {
 		return robot.talk.Hello(userName)
 	}
-	return fmt.Sprintf("你好， %s ！ 我可以为你做些什么?", userName)
+	return fmt.Sprintf("hello ， %s ！ what can i do for u?", userName)
 }
 
 func (robot *simpleCN) Talk(heard string) (saying string, end bool , err error) {
@@ -42,17 +42,17 @@ func (robot *simpleCN) Talk(heard string) (saying string, end bool , err error) 
 	switch heard {
 	case "":
 		return 
-	case "没有", "再见":
-		saying = "再见"
+	case "nothing", "bye":
+		saying = "bye"
 		end = true
 		return
 	default:
-		saying = "对不起， 我没有听懂您说的。"
+		saying = "sorry， i did not catch you。"
 	}
 }
 
 func (robot *simpleCN) ReportError(err error) string {
-	return fmt.Sprintf("发生了一个错误: %s\n", err)
+	return fmt.Sprintf("an error occur: %s\n", err)
 }
 
 func (robot *simpleCN) End() error {
