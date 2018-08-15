@@ -29,12 +29,12 @@ func main() {
 func handleSignal( ) {
 	sigRecv1 := make(chan os.Signal, 1)
 	sigs1 := []os.Signal{syscall.SIGINT, syscall.SIGQUIT}
-	fmt.Printf("Set notification for %s... [sigRecv1]", sigs1)
+	fmt.Printf("Set notification for %s... [sigRecv1]\n", sigs1)
 	signal.Notify(sigRecv1, sigs1...)
 
 	sigRecv2 := make(chan os.Signal, 1)
 	sigs2 := []os.Signal{syscall.SIGQUIT}
-	fmt.Printf("Set notification for %s... [sigRecv2]", sigs2)
+	fmt.Printf("Set notification for %s... [sigRecv2]\n", sigs2)
 	signal.Notify(sigRecv2, sigs2...)
 
 	var wg sync.WaitGroup
@@ -73,7 +73,7 @@ func sendSignal() {
 		}
 	}()
 
-	cmds := []&exec.Cmd{
+	cmds := []*exec.Cmd{
 		exec.Command("ps", "aux"),
 		exec.Command("grep", "signal"),
 		exec.Command("grep", "-v" , "grep"),
@@ -86,6 +86,8 @@ func sendSignal() {
 		fmt.Printf("Command exection error : %s\n", err)
 		return
 	}
+
+	fmt.Println(output)
 
 	pids, err := getPids(output)
 	if err != nil {
@@ -111,14 +113,84 @@ func sendSignal() {
 	}
 }
 
-func getPids(str []string) ([]int , error) {
+func getPids(strs []string) ([]int , error) {
 	var pids []int
 	for _, str := range strs {
-		pid, err := strconv.Atoi(strings.TrimSapce(str))
+		pid, err := strconv.Atoi(strings.TrimSpace(str))
 		if err != nil {
 			return nil, err
 		}
 		pids = append(pids, pid)
 	}
 	return pids, nil
+}
+
+func runCmds(cmds []*exec.Cmd) ([]string, error) {
+	if cmds == nil || len(cmds) == 0 {
+		return nil, errors.New("The cmd slice is invalid")
+	}
+
+	first := true
+	var output []byte
+	var err error
+	for _, cmd := range cmds {
+		fmt.Printf("Run Command : %v\n", getCmdPlaintext(cmd))
+		if !first {
+			var stdinBuf bytes.Buffer
+			stdinBuf.Write(output)
+			cmd.Stdin = &stdinBuf
+		}
+		var stdoutBuf bytes.Buffer
+		cmd.Stdout = &stdoutBuf
+		if err = cmd.Start(); err != nil {
+			return nil, getError(err, cmd)
+		}
+		if err = cmd.Wait(); err != nil {
+			return nil, getError(err, cmd)
+		}
+		output = stdoutBuf.Bytes()
+		if first {
+			first = false
+		}
+	}
+
+	var lines []string
+	var outputBuf bytes.Buffer
+	outputBuf.Write(output)
+	for {
+		line , err := outputBuf.ReadBytes('\n')
+		if err != nil {
+			if err == io.EOF {
+				break
+			} else {
+				return nil, getError(err, nil)
+			}
+		}
+		lines = append(lines, string(line))
+	}
+	return lines, nil
+}
+
+func getCmdPlaintext(cmd *exec.Cmd) string {
+	var buf bytes.Buffer
+	buf.WriteString(cmd.Path)
+	for _, arg := range cmd.Args[1:] {
+		buf.WriteRune(' ')
+		buf.WriteString(arg)
+	}
+	return buf.String()
+}
+
+func getError(err error, cmd *exec.Cmd, extraInfo ...string) error {
+	var errMsg string
+	if cmd != nil {
+		errMsg = fmt.Sprintf("%s [%s %v]", err, (*cmd).Path, (*cmd).Args)
+	} else {
+		errMsg = fmt.Sprintf("%s ", err)
+	}
+
+	if len(extraInfo) > 0 {
+		errMsg = fmt.Sprintf("%s (%v)", errMsg, extraInfo)
+	}
+	return errors.New(errMsg)
 }
