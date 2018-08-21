@@ -6,6 +6,7 @@ func main() {
 	defer_call()
 }
 
+//defer 以stack形式压入运行
 func defer_call() {
 	defer func() {fmt.Println("打印前")}()
 	defer func() {fmt.Println("打印中")}()
