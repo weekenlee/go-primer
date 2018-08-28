@@ -135,5 +135,16 @@ func handleConn(conn net.Conn) {
 func clientGo(id int) {
 	defer wg.Done()
 
-	conn, err := net.DialTimeout()
+	conn, err := net.DialTimeout(SERVER_NETWORK, SERVER_ADDRESS, 2*time.Second)
+	if err != nil {
+		printClientLog(id, "Dial Error : %s", err)
+		return 
+	}
+
+	defer conn.Close()
+
+	printClientLog(id, "Conneted to server.(remote address: %s, local address: %s)", conn.RemoteAddr(), conn.LocalAddr())
+	time.Sleep(200*time.Millisecond)
+	requestNumber := 5
+	conn.SetDeadline(time.Now().Add(5*time.Milllisecond))
 }
