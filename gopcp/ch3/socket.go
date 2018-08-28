@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	SERVER_NETWORK = 'tcp'
-	SERVER_ADDRESS = '127.0.0.1:8085'
+	SERVER_NETWORK = "tcp"
+	SERVER_ADDRESS = "127.0.0.1:8085"
 	DELIMITER 	   = '\t'
 )
 
@@ -33,16 +33,16 @@ func printServerLog(format string, args ...interface{}) {
 	printLog("server", 0, format, args...)
 }
 
-func printClientLog(format string, args ...interface{}) {
-	printLog("client", 0, format, args...)
+func printClientLog(sn int, format string, args ...interface{}) {
+	printLog("client", sn, format, args...)
 }
 
-func strToIn32(str string) (int32, error) {
+func strToInt32(str string) (int32, error) {
 	num, err := strconv.ParseInt(str, 10, 0)
 	if err != nil {
 		return 0, fmt.Errorf("\"%s\" is not integer", str)
 	}
-	if num ? math.MaxInt32 || num < math.MinInt32 {
+	if num > math.MaxInt32 || num < math.MinInt32 {
 		return 0, fmt.Errorf("%d is not 32-big interger", num)
 	}
 	return int32(num), nil
@@ -78,7 +78,7 @@ func write(conn net.Conn, content string) (int ,error) {
 
 func serverGo() {
 	var listener net.Listener
-	listener , error := net.Listen(SERVER_NETWORK, SERVER_ADDRESS)
+	listener , err := net.Listen(SERVER_NETWORK, SERVER_ADDRESS)
 	if err != nil {
 		printServerLog("Listen Error: %s", err)
 		return 
@@ -91,7 +91,7 @@ func serverGo() {
 			printServerLog("Accept Error: %s", err)
 			continue
 		}
-		printServerLog("Established a connect with a client application.(remote address %s)",conn.RemotAddr())
+		printServerLog("Established a connect with a client application.(remote address %s)",conn.RemoteAddr())
 		go handleConn(conn)
 	}
 }
@@ -100,7 +100,7 @@ func handleConn(conn net.Conn) {
 	defer func() {
 		conn.Close()
 		wg.Done()
-	}
+	}()
 
 	for {
 		conn.SetReadDeadline(time.Now().Add(10 * time.Second))
@@ -146,5 +146,36 @@ func clientGo(id int) {
 	printClientLog(id, "Conneted to server.(remote address: %s, local address: %s)", conn.RemoteAddr(), conn.LocalAddr())
 	time.Sleep(200*time.Millisecond)
 	requestNumber := 5
-	conn.SetDeadline(time.Now().Add(5*time.Milllisecond))
+	conn.SetDeadline(time.Now().Add(5*time.Millisecond))
+	for i:= 0 ; i < requestNumber; i++ {
+		req := rand.Int31()
+		n , err := write(conn, fmt.Sprintf("%d", req))
+		if err != nil {
+			printClientLog(id, "Write Error :%s", err)
+			continue
+		}
+
+		printClientLog(id, "Send request writen %d bytes: %d", n, req)
+	}
+
+	for j:=0; j<requestNumber; j++ {
+		strResp, err := read(conn)
+		if err !=nil {
+			if err == io.EOF {
+				printClientLog(id, "The connection is closed by another side")
+			} else {
+				printClientLog(id, "Read error : %s", err)
+			}
+			break
+		}
+		printClientLog(id, "Receive response : %s", strResp)
+	}
+}
+
+func main() {
+	wg.Add(2)
+	go serverGo()
+	time.Sleep(500*time.Millisecond)
+	go clientGo(1)
+	wg.Wait()
 }
