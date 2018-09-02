@@ -12,6 +12,7 @@ func Concat(parts ...string) (string , error) {
         return "", errors.New("No string supplied")
     }
 
+	
     return strings.Join(parts, " "), nil
 }
 
