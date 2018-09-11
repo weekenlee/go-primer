@@ -16,6 +16,7 @@ func main() {
 		return atomic.AddInt32(&count, 1)
 	}
 	pool := sync.Pool{New : newFunc}
+	fmt.Printf("Value3 : %v\n", v3)
 
 	v1 := pool.Get()
 	fmt.Printf("Value 1 ： %v \n", v1)
