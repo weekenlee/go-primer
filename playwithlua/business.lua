@@ -43,8 +43,8 @@ function get_str(str)
     return str 
 end 
 
-function get_endline()
-    endline = tonumber(yingshui_quanjia_cofig.startline)
+function get_endline(ruls)
+    endline = tonumber(ruls)
     value = p:get('A'..tostring(endline))
     while (string.len(value) > 0)  do 
         endline = endline+1
@@ -119,7 +119,7 @@ function computefile(filename,sheetname)
     nowrows=0
 
     p = datarows.new(filename, sheetname)
-    maxrows = get_endline()
+    maxrows = get_endline(yingshui_quanjia_cofig.huizongruls)
 
     nowrows = maxrows + 2
     computeruls(yingshui_quanjia_cofig.huizongruls, p)
