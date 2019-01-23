@@ -12,25 +12,67 @@ function get_endline(config)
     return endline 
 end
 
+function temp() 
+    local tab={1,2}
+    local i=0
+    return function()
+        i=i+1
+        return tab[1]
+    end
+end
 
 function groupby(c)
-    startline = tonumber(yingshui_quanjia_cofig.startline)
-    tab = {}
-    i = 0
+    local startline = tonumber(mianshui_quanjia_config.startline)
+    local tab = {}
     for i = startline, maxrows-1 do
-        value = tonumber(p:get(C..tostring(i)))
-        table.insert(tab,value)
+        value = tonumber(p:get(c..tostring(i)))
+        tab[value] = true
     end
 
+    local array={}
+    for k, v in pairs(tab) do
+        table.insert(array,k)
+        print(k, v)
+    end
+
+    i = 0
     return function()
         i = i + 1
-        return tab[i]
+        print(array[i])
+        return array[i]
     end
+end
+
+function after(srcc, desc)
+    valuesrc = p:get(srcc..tostring(nowrows))
+    startline = tonumber(yingshui_quanjia_config.startline)
+    for i = startline, maxrows-1 do
+        value = p:get(srcc..tostring(i))
+        if value == valuesrc then
+            return p:get(desc..tostring(i))
+        end
+    end
+    return nil
+end
+
+--获取一列,如果srcc列,与nowrows的srcc列值相同
+function after_col(srcc, desc)
+    valuesrc = tonumber(p:get(srcc..tostring(nowrows)))
+    startline = tonumber(yingshui_quanjia_config.startline)
+    tab = {}
+    for i = startline, maxrows-1 do
+        value = tonumber(p:get(srcc..tostring(i)))
+        valuedes = tonumber(p:get(desc..tostring(i)))
+        if value==valuesrc then 
+            table.insert(tab,valuedes)
+        end
+    end
+    return tab
 end
 
 --获取一列
 function col(C, f)
-    startline = tonumber(yingshui_quanjia_cofig.startline)
+    startline = tonumber(yingshui_quanjia_config.startline)
     tab = {}
     for i = startline, maxrows-1 do
         value = tonumber(p:get(C..tostring(i)))

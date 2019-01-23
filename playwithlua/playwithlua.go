@@ -85,6 +85,10 @@ func datarowsSet(L *lua.LState) int {
 	p := checkDatarows(L)
 	axis := L.CheckString(2)
 	value := L.CheckString(3)
+	types := "" 
+	if L.GetTop() == 4 {
+		types = L.CheckString(4)
+	} 
 	idx := 0
 	for i, r := range axis {
 		if unicode.IsDigit(r) {
@@ -100,10 +104,16 @@ func datarowsSet(L *lua.LState) int {
     	if err != nil {
 		 	fmt.Println(err)
 		} 
+		if types == "str" {
+			fmt.Println(".................str:" + value)
+			p.xlsx.SetCellValue(p.sheetname,axis,value)
+			p.xlsx.SetCellStyle(p.sheetname, axis, axis,numstyle)
+			return 1
+		}
 		if unicode.IsDigit(rune(value[0])) || strings.HasPrefix(value, "-") { 
 			value1, _ := strconv.ParseFloat(value,64) 
 			p.xlsx.SetCellValue(p.sheetname,axis,value1)
-		}else {
+		} else {
 			p.xlsx.SetCellValue(p.sheetname,axis,value)
 		}
 		p.xlsx.SetCellStyle(p.sheetname, axis, axis,numstyle)
