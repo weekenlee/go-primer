@@ -2,7 +2,6 @@ require "computelib"
 
 --应税全价
 yingshui_quanjia_cofig = {
- 	filedir="./应税申报表_全价收入_生成xlsxs/",	  --需要处理的文件所在目录
 	sheetname = "平台展示",  			 --每个需要处理的文件的sheet名称
     startline = "6", 					--每个需要处理的文件的数据记录开始行
     huizongruls={
@@ -16,7 +15,7 @@ yingshui_quanjia_cofig = {
         {J = "minus('H','I')"},
         {K = "sum({'D', max_0('E')})/sum({1 + 0.03})"},
         {L = "minus(sum({'D' , max_0('E')}), 'I')"},
-        {M = "sum(col('M'))"},
+        {M = "math.abs(division('L',1.03) * 0.03)"},
         {N = "get_str('附加税=应缴增值税*附加税率')"},
     },
     fenbieruls={
@@ -25,105 +24,198 @@ yingshui_quanjia_cofig = {
         {E = "sum(col('E'))"},
         {F = "sum(col('F'))"},
         {G = "sum(col('G'))"},
-        {H = "sum({'F','G'})"},
-        {I = "max_0(min('E','H'))"},
-        {J = "minus('H','I')"},
-        {K = "sum({'D', max_0('E')})/sum({1 + 0.03})"},
-        {L = "minus(sum({'D' , max_0('E')}), 'I')"},
+        {H = "sum(col('H'))"},
+        {I = "sum(col('I'))"},
+        {J = "sum(col('J'))"},
+        {K = "sum(col('K'))"},
+        {L = "sum(col('L'))"},
         {M = "sum(col('M'))"},
         {N = "sum(col('N'))"},
     }
 }
 
+--应税差价
+yingshui_chajia_cofig = {
+	sheetname = "平台展示",  			 --每个需要处理的文件的sheet名称
+    startline = "6", 					--每个需要处理的文件的数据记录开始行
+    huizongruls={
+        {ABC = "get_str('汇总申报合计:')"},
+        {D = "sum(col('D'))"},
+        {E = "sum(col('E'))"},
+        {F = "sum(col('F'))"},
+        {G = "if_zhengshu_0('E')"},
+        {H = "sum({'F','G'})"},
+        {I = "max_0(min('E','H'))"},
+        {J = "minus('H','I')"},
+        {K = "sum({'D', max_0('E')})/sum({1 + 0.03})"},
+        {L = "minus(sum({'D' , max_0('E')}), 'I')"},
+        {M = "math.abs(division('L',1.03) * 0.03)"},
+        {N = "get_str('附加税=应缴增值税*附加税率')"},
+    },
+    fenbieruls={
+        {ABC = "get_str('分别申报合计:')"},
+        {D = "sum(col('D'))"},
+        {E = "sum(col('E', function(a) return a>0 end))"},
+        {F = "sum(col('F'))"},
+        {G = "sum(col('G'))"},
+        {H = "sum(col('H'))"},
+        {I = "sum(col('I'))"},
+        {J = "sum(col('J'))"},
+        {K = "sum(col('K'))"},
+        {L = "sum(col('L'))"},
+        {M = "sum(col('M'))"},
+        {N = "sum(col('N'))"},
+    }
+}
+
+--免税全价
+mianshui_quanjia_cofig = {
+	sheetname = "平台展示",  			 --每个需要处理的文件的sheet名称
+    startline = "6", 					--每个需要处理的文件的数据记录开始行
+    huizongruls={
+        {ABC = "get_str('汇总申报合计:')"},
+        {D = "sum(col('D'))"},
+        {E = "sum(col('E'))"},
+        {F = "sum(col('F'))"},
+        {G = "sum(col('G'))"},
+        {H = "sum({'F','G'})"},
+        {I = "max_0(min('E','H'))"},
+        {J = "minus('H','I')"},
+        {K = "sum({'D', max_0('E')})"},
+        {L = "minus('K', 'I')"},
+    },
+    fenbieruls={
+        {ABC = "get_str('分别申报合计:')"},
+        {D = "sum(col('D'))"},
+        {E = "sum(col('E'))"},
+        {F = "sum(col('F'))"},
+        {G = "sum(col('G'))"},
+        {H = "sum(col('H'))"},
+        {I = "sum(col('I'))"},
+        {J = "sum(col('J'))"},
+        {K = "sum(col('K'))"},
+        {L = "sum(col('L'))"},
+    }
+}
+
+--免税差价
+mianshui_chajia_cofig = {
+	sheetname = "平台展示",  			 --每个需要处理的文件的sheet名称
+    startline = "6", 					--每个需要处理的文件的数据记录开始行
+    huizongruls={
+        {ABC = "get_str('汇总申报合计:')"},
+        {D = "sum(col('D'))"},
+        {E = "sum(col('E'))"},
+        {F = "sum(col('F'))"},
+        {G = "sum(col('E'))"},
+        {H = "sum({'F','G'})"},
+        {I = "max_0(min('E','H'))"},
+        {J = "minus('H','I')"},
+        {K = "sum({'D', max_0('E')})"},
+        {L = "minus('K', 'I')"},
+    },
+    fenbieruls={
+        {ABC = "get_str('分别申报合计:')"},
+        {D = "sum(col('D'))"},
+        {E = "sum(col('E', function(a) return a>0 end))"},
+        {F = "sum(col('F'))"},
+        {G = "sum(col('G'))"},
+        {H = "sum(col('H'))"},
+        {I = "sum(col('I'))"},
+        {J = "sum(col('J'))"},
+        {K = "sum(col('K'))"},
+        {L = "sum(col('L'))"},
+    }
+}
+
+--免税全价明细
+mianshui_quanjia_cofig = {
+	sheetname = "平台展示",  			 --每个需要处理的文件的sheet名称
+    startline = "6", 					--每个需要处理的文件的数据记录开始行
+    computeTimes = "gettable_groupby('E')",
+    huizongruls={
+        {ABC = "get_str('汇总申报合计:')"},
+        {E = "i"},
+        {D = "after('E','D'))"},
+        {F = "after('E','F'))"},
+        {G = "sum(after_col('E','G')))"},
+        {H = "sum(after_col('E','H')))"},
+        {I = "min('G','H')"},
+        {J = "minus('G','I')"},
+        {K = "max_0('J')*0.03"},
+    },
+    fenbieruls={
+        {ABC = "get_str('分别申报合计:')"},
+        {E = "i"},
+        {D = "after('E','D'))"},
+        {F = "after('E','F'))"},
+        {G = "sum(after_col('E','G')))"},
+        {H = "sum(after_col('E','H')))"},
+        {I = "sum(after_col('E','I'))"},
+        {J = "sum(after_col('E','J'))"},
+        {K = "sum(after_col('E','K'))"},
+    }
+}
+
+
 p = "" 
 maxrows=0
 nowrows=0
 
-function get_str(str)
-    return str 
-end 
 
-function get_endline(ruls)
-    endline = tonumber(ruls)
-    value = p:get('A'..tostring(endline))
-    while (string.len(value) > 0)  do 
-        endline = endline+1
-        value = p:get("A"..endline)
-    end
-    return endline 
-end
-
---获取一列
-function col(C)
-    startline = tonumber(yingshui_quanjia_cofig.startline)
-    tab = {}
-    for i = startline, maxrows-1 do
-        table.insert(tab,tonumber(p:get(C..tostring(i))))
-    end
-    return tab
-end
-
---获取一个值
-function get_real_value(a)
-    if type(a) == "string" then 
-        return tonumber(p:get(a..tostring(nowrows)))
-    end
-    return a
-end
-
-function sum(t)
-    local arg=t
-    local s = 0
-    for k, v in ipairs(arg) do
-        s = s + get_real_value(v)
-    end
-    return s
-end
-
-function minus(a, b)
-    avalue = get_real_value(a) 
-    bvalue = get_real_value(b) 
-    return avalue-bvalue
-end
-
-function max_0(C)
-    cvalue = get_real_value(C)
-    return math.max(cvalue, 0)
-end
-
-function min(a, b)
-    avalue = get_real_value(a)
-    bvalue = get_real_value(b)
-    return math.min(avalue,bvalue)
-end
-
-function computeruls(ruls,p)
-    for k, v in pairs(ruls) do 
-        for kk, vv in pairs(v) do 
-            f = loadstring("result = "..vv)
-            f()
-            if type(result) ~= "string" then
-                p:set(kk..tostring(nowrows), string.format("%0.2f", result))
-            else
-                print(kk..tostring(nowrows), result)
-                p:set(kk..tostring(nowrows), result)
+function computeruls(ruls,p, computeTimesF)
+    if computeTimes ~= nil then
+        f = dostring(computeTimes)
+        times = f()
+    else
+        times = function () 
+            local t={1}
+            local i=0
+            return function()
+                i=i+1
+                return t[1]
             end
         end
     end
-    nowrows = nowrows + 1
+
+    for i in times() do 
+        for k, v in pairs(ruls) do 
+            for kk, vv in pairs(v) do 
+                f = loadstring("result = "..vv)
+                f()
+                if type(result) ~= "string" then
+                    p:set(kk..tostring(nowrows), string.format("%0.2f", result))
+                else
+                    p:set(kk..tostring(nowrows), result)
+                end
+            end
+        end
+        nowrows = nowrows + 1
+    end
 end
 
 function computefile(filename,sheetname)
+    print(filename)
     p = "" 
     maxrows=0
     nowrows=0
 
     p = datarows.new(filename, sheetname)
-    maxrows = get_endline(yingshui_quanjia_cofig.huizongruls)
 
-    nowrows = maxrows + 2
-    computeruls(yingshui_quanjia_cofig.huizongruls, p)
-    computeruls(yingshui_quanjia_cofig.fenbieruls, p)
+    if string.find(filename,"全价_应税台账汇总表") ~= nil then 
+        config = yingshui_quanjia_cofig
+    elseif string.find(filename, "全价_免税台账汇总表") ~= nil then
+        config = yingshui_chajia_cofig
+    elseif string.find(filename, "差价_应税台账汇总表") ~= nil then
+        config = mianshui_chajia_cofig
+    elseif string.find(filename, "差价_应税台账汇总表") ~= nil then
+        config = mianshui_chajia_cofig
+    end
+
+    maxrows = get_endline(config)
+    nowrows = maxrows + 2 --结果隔开两行
+    computeruls(config.huizongruls, p, config.computeTimes)
+    computeruls(config.fenbieruls, p, config.computeTimes)
 
     p:save()
 end

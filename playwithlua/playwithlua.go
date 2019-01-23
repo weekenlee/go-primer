@@ -1,6 +1,9 @@
 package main
 
 import (
+	"os"
+	"strings"
+	"path/filepath"
 	"unicode"
 	"strconv"
 	"fmt"
@@ -97,7 +100,7 @@ func datarowsSet(L *lua.LState) int {
     	if err != nil {
 		 	fmt.Println(err)
 		} 
-		if unicode.IsDigit(rune(value[0])) {
+		if unicode.IsDigit(rune(value[0])) || strings.HasPrefix(value, "-") { 
 			value1, _ := strconv.ParseFloat(value,64) 
 			p.xlsx.SetCellValue(p.sheetname,axis,value1)
 		}else {
@@ -141,6 +144,24 @@ func readExcel(filename , sheetname string) (*excelize.File){
 	return xlsx
 }
 
+
+//独立起一个lua虚拟机
+func testgo(path string) {
+	L := lua.NewState()
+	defer L.Close()
+
+	registerDatarowsType(L)	
+
+	if err := L.DoFile(`business.lua`); err != nil {
+    	panic(err)
+	}
+
+	command := `computefile("`+path+`","平台展示")`
+	if err := L.DoString(command); err != nil {
+		fmt.Println("error " + path)
+	}
+}
+
 func main() {
 	L := lua.NewState()
 	defer L.Close()
@@ -150,9 +171,26 @@ func main() {
 	if err := L.DoFile(`business.lua`); err != nil {
     	panic(err)
 	}
-	for i := 0; i < 1; i++ {
-		if err := L.DoString(`computefile("MA35HA9N-2_江西可伟资产管理有限公司_2018年四季度_全价_应税台账汇总表.xlsx","平台展示")`); err != nil {
- 		   	panic(err)
-		}
+	
+	err := filepath.Walk("./files", func(path string, f os.FileInfo, err error) error {
+		if ( f == nil ) {return err}
+		if f.IsDir() {return nil}
+		ok := strings.HasSuffix(path, ".xlsx")
+  			if ok {
+				command := `computefile("`+path+`","平台展示")`
+				command = strings.Replace(command, "\\", "\\\\", -1)
+				//fmt.Println(command)
+				if err := L.DoString(command); err != nil {
+					fmt.Println("error " + path)
+					fmt.Println(err)
+					return nil	
+				}
+				// 单独起一个lua虚拟机
+				// go testgo(path)
+			}
+		return nil
+	})
+	if err != nil {
+		fmt.Printf("filepath.Walk() returned %v\n", err)
 	}
 }
