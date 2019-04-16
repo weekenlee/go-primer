@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"unicode"
+)
 
 func main() {
 	var a interface{}
@@ -8,4 +11,6 @@ func main() {
 	a = "123"
 	b = a.(string)
 	fmt.Println(b)
+	fmt.Println(b[0])
+	fmt.Println(unicode.IsDigit(rune(b[0])))
 }
