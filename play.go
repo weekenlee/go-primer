@@ -13,4 +13,5 @@ func main() {
 	fmt.Println(b)
 	fmt.Println(b[0])
 	fmt.Println(unicode.IsDigit(rune(b[0])))
+
 }
