@@ -13,4 +13,9 @@ func TestZip(t *testing.T) {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	err = Unzip("demo.zip")
+	if err != nil {
+		fmt.Println(err)
+	}
 }
