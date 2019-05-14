@@ -1,11 +1,7 @@
-package main
+package pubsub
 
 import (
-	"flag"
 	"fmt"
-	"log"
-	"os"
-	"runtime/pprof"
 	"strings"
 	"sync"
 	"time"
@@ -96,19 +92,7 @@ func (p *Publisher) sendTopic(
 	}
 }
 
-var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
-
-func main() {
-
-	if *cpuprofile != "" {
-		f, err := os.Create(*cpuprofile)
-		if err != nil {
-			log.Fatal(err)
-		}
-		pprof.StartCPUProfile(f)
-		defer pprof.StopCPUProfile()
-	}
-
+func run() {
 	p := NewPublisher(100*time.Millisecond, 10)
 	defer p.Close()
 
