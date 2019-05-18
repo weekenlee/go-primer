@@ -48,4 +48,6 @@ func main() {
 		wg.Add(1)
 		go produce(data, &wg)
 	}
+	go consume(data, done)
+	wg.Wait()
 }
