@@ -31,7 +31,7 @@ type point struct {
 }
 
 func (p *point) add(r point) point {
-	return point{p.i + r.i,  p.j + r.i}
+	return point{p.i + r.i,  p.j + r.j}
 }
 
 func (p point) at(grid [][]int) (int,bool) {
