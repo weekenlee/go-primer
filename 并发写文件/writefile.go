@@ -49,5 +49,15 @@ func main() {
 		go produce(data, &wg)
 	}
 	go consume(data, done)
-	wg.Wait()
+	go func() {
+		wg.Wait()
+		close(data)
+	}()
+
+	d := <-done
+	if d == true {
+		fmt.Println("File written successfully")
+	} else {
+		fmt.Println("file write failed")
+	}
 }
