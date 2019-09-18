@@ -12,4 +12,13 @@ func main() {
 	for k, v := range m {
 		fmt.Println(k,"->", *v)
 	}
+
+	for key, val := range slice {
+		value := val
+		m[key] = &value
+	}
+
+	for k, v := range m {
+		fmt.Println(k,"->", *v)
+	}
 }
