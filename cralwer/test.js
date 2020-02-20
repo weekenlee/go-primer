@@ -46,6 +46,7 @@ function sum(a1, a2) {
 }
 
 console.log("apply resutl:" + sum.apply(this, [1,2]))
+console.log("call resutl:" + sum.call(this, 1,2))
  
 end = Date.now()
 console.log(end - start) //毫秒数
