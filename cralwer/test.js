@@ -47,6 +47,19 @@ function sum(a1, a2) {
 
 console.log("apply resutl:" + sum.apply(this, [1,2]))
 console.log("call resutl:" + sum.call(this, 1,2))
+
+window={}
+window.color = "red"
+var o ={color : "blue"}
+function sayColor() {
+    console.log(this.color)
+}
+sayColor()
+sayColor.call(this)
+sayColor.call(window)
+sayColor.call(o)
+var funobj = sayColor.bind(o)
+funobj()
  
 end = Date.now()
 console.log(end - start) //毫秒数
