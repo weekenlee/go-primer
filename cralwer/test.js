@@ -64,6 +64,14 @@ funobj()
 var s1 = "abcedgf"
 console.log(s1.substring(2))
 console.log(s1.substr(2))
- 
+
+var num = 10
+console.log(num.toString(10))
+console.log(num.toString(8))
+console.log(num.toString(2))
+console.log(num.toString(16))
+console.log(num.toFixed(16))
+
+
 end = Date.now()
 console.log(end - start) //毫秒数
