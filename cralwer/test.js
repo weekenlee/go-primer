@@ -60,6 +60,10 @@ sayColor.call(window)
 sayColor.call(o)
 var funobj = sayColor.bind(o)
 funobj()
+
+var s1 = "abcedgf"
+console.log(s1.substring(2))
+console.log(s1.substr(2))
  
 end = Date.now()
 console.log(end - start) //毫秒数
