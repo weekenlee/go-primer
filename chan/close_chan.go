@@ -25,6 +25,7 @@ func main() {
 	}
 	close(jobs)
 	fmt.Println("sent all jobs")
+	fmt.Println("sent all jobs")
 
 	<-done
 }
